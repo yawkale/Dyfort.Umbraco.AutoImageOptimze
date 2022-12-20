@@ -1,0 +1,21 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <DyfortUmbracoAutoImageOptimzeContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\Dyfort.Umbraco.AutoImageOptimze\**\*.*</DyfortUmbracoAutoImageOptimzeContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyDyfortUmbracoAutoImageOptimzeAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <DyfortUmbracoAutoImageOptimzeContentFiles Include="$(DyfortUmbracoAutoImageOptimzeContentFilesPath)" />
+        </ItemGroup>
+        <Message Text="Copying Dyfort.Umbraco.AutoImageOptimze files: $(DyfortUmbracoAutoImageOptimzeContentFilesPath) - #@(DyfortUmbracoAutoImageOptimzeContentFiles->Count()) files" Importance="high" />
+        <Copy SourceFiles="@(DyfortUmbracoAutoImageOptimzeContentFiles)" DestinationFiles="@(DyfortUmbracoAutoImageOptimzeContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\Dyfort.Umbraco.AutoImageOptimze\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    </Target>
+    
+    <Target Name="ClearDyfortUmbracoAutoImageOptimzeAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <DyfortUmbracoAutoImageOptimzeDir Include="$(MSBuildProjectDirectory)\App_Plugins\Dyfort.Umbraco.AutoImageOptimze\" />
+        </ItemGroup>
+        <Message Text="Clear old Dyfort.Umbraco.AutoImageOptimze data" Importance="high" />
+        <RemoveDir Directories="@(DyfortUmbracoAutoImageOptimzeDir)" />
+    </Target>
+</Project>

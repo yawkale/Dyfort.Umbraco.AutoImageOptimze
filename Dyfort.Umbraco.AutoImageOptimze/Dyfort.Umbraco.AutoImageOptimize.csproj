@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ContentTargetFolders>.</ContentTargetFolders>
+		<Product>Dyfort.Umbraco.AutoImageOptimize</Product>
+		<PackageId>Dyfort.Umbraco.AutoImageOptimize</PackageId>
+		<Title>Dyfort.Umbraco.AutoImageOptimize</Title>
+		<Description>Allows automatic image optimization for Umbraco media files.</Description>		
+		<PackageTags>umbraco,plugin,webp,umbraco-marketplace</PackageTags>
+		<PackageProjectUrl>https://www.dyfort.com/products/umbraco-autoimage-optimize/</PackageProjectUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<Version>1.0.1</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="10.2.1" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.2.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="App_Plugins\Dyfort.Umbraco.AutoImageOptimze\**">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</Content>
+		<None Include="build\**">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="icon.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+</Project>

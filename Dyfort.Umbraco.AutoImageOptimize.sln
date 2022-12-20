@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyfort.Umbraco.AutoImageOptimize", "Dyfort.Umbraco.AutoImageOptimze\Dyfort.Umbraco.AutoImageOptimize.csproj", "{6E5AAB80-E5BA-4C1E-A490-9F7D81F26A9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E5AAB80-E5BA-4C1E-A490-9F7D81F26A9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E5AAB80-E5BA-4C1E-A490-9F7D81F26A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E5AAB80-E5BA-4C1E-A490-9F7D81F26A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E5AAB80-E5BA-4C1E-A490-9F7D81F26A9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6FBC99CF-5C75-4F59-A3E8-ECA933087B8C}
+	EndGlobalSection
+EndGlobal
