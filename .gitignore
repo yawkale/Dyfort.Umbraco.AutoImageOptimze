@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Dyfort.Umbraco.AutoImageOptimze/.vs/Dyfort.Umbraco.AutoImageOptimze
+/Dyfort.Umbraco.AutoImageOptimze/bin
+/Dyfort.Umbraco.AutoImageOptimze/obj
