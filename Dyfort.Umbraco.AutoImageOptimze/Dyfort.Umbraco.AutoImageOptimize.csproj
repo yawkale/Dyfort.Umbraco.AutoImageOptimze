@@ -5,11 +5,12 @@
 		<Product>Dyfort.Umbraco.AutoImageOptimize</Product>
 		<PackageId>Dyfort.Umbraco.AutoImageOptimize</PackageId>
 		<Title>Dyfort.Umbraco.AutoImageOptimize</Title>
-		<Description>Allows automatic image optimization for Umbraco media files.</Description>		
+		<Description>Allows automatic image optimization for Umbraco media and images files.</Description>		
 		<PackageTags>umbraco,plugin,webp,umbraco-marketplace</PackageTags>
 		<PackageProjectUrl>https://www.dyfort.com/products/umbraco-autoimage-optimize/</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>

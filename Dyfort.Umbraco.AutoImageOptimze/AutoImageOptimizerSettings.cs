@@ -3,7 +3,7 @@
     public class AutoImageOptimizerSettings
     {
         public static string ConfigurationName = "AutoImageOptimizer";
-        public int? Quality { get; set; }
+        public int? Quality { get; set; } = 92;
         public int? MaxWidth { get; set; }
         public int? MaxHeight { get; set; }
         public string[] AllowedExtentions { get; set; } = new string[] {
