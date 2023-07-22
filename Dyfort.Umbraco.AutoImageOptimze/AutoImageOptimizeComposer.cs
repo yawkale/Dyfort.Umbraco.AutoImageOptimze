@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Web.Commands;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using SixLabors.ImageSharp.Web.Processors;
@@ -29,18 +28,7 @@ namespace Dyfort.Umbraco.AutoImageOptimize
 
             builder.Services.AddImageSharp(options =>
             {
-                // Enable Lossless compression for transparent PNG
-                options.OnBeforeSaveAsync = c =>
-                {
-                    if (c.Encoder.GetType().Name == "WebpEncoder" && c.Image.PixelType.BitsPerPixel == 32)
-                    {
-                        c.Encoder = new WebpEncoder()
-                        {
-                            FileFormat = WebpFileFormatType.Lossless,
-                        };
-                    }
-                    return Task.CompletedTask;
-                };
+              
 
                 options.OnParseCommandsAsync = c =>
                 {
