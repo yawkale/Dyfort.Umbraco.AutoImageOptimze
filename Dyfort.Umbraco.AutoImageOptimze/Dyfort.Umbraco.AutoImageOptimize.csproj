@@ -9,7 +9,7 @@
 		<PackageTags>umbraco,plugin,webp,umbraco-marketplace</PackageTags>
 		<PackageProjectUrl>https://www.dyfort.com/products/umbraco-autoimage-optimize/</PackageProjectUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>

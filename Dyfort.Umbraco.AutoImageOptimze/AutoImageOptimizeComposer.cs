@@ -47,8 +47,13 @@ namespace Dyfort.Umbraco.AutoImageOptimize
                         if (c.Context.Request.QueryString.Value?.Contains("noformat") == true)
                             c.Commands.Add("noformat", "1");
 
+                        if (c.Context.Request.QueryString.Value?.Contains("optimize") == true)
+                            c.Commands.Add("noformat", "1");
+
                         // Exclude /umbraco/assets and don't convert if WebP is not supported
-                        if (path.Contains("/umbraco/assets/") == false &&
+                        var excludePath = settings.ExcludedFolderPaths.Any(x => path.Contains(x));
+
+                        if (excludePath == false &&
                             c.Context.Request.GetTypedHeaders().Accept.Any(x => x.MediaType.Value == "image/webp"))
                         {
                             
