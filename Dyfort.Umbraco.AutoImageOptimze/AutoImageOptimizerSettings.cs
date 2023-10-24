@@ -11,7 +11,7 @@
             ".jpg",
             ".jpeg"
         };
-
+        public string[] ExcludedFolderPaths { get; set; } = new string[] { "/umbraco/assets/" };
         public bool ConvertWebp { get; set; } = true;
         public bool Enabled { get; set; } = true;
     }

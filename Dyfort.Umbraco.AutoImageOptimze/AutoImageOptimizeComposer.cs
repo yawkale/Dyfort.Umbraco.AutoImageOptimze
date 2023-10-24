@@ -16,7 +16,7 @@ namespace Dyfort.Umbraco.AutoImageOptimize
     public class AutoImageOptimizeComposer : IComposer
     {
         public void Compose(IUmbracoBuilder builder)
-        {          
+        {
             builder.Services.AddOptions<AutoImageOptimizerSettings>()
                      .Bind(builder.Config.GetSection(AutoImageOptimizerSettings.ConfigurationName));
 
@@ -51,7 +51,7 @@ namespace Dyfort.Umbraco.AutoImageOptimize
 
 
                     if (c.Context != null)
-                    {                      
+                    {
 
                         var path = c.Context.Request.Path.ToString();
 
@@ -59,11 +59,15 @@ namespace Dyfort.Umbraco.AutoImageOptimize
                         if (c.Context.Request.QueryString.Value?.Contains("noformat") == true)
                             c.Commands.Add("noformat", "1");
 
-                        // Exclude /umbraco/assets and don't convert if WebP is not supported
-                        if (path.Contains("/umbraco/assets/") == false &&
+                        if (c.Context.Request.QueryString.Value?.Contains("optimize") == true)
+                            c.Commands.Add("noformat", "1");                        
+
+                        var excludePath = settings.ExcludedFolderPaths.Any(x => path.Contains(x));
+
+                        if (excludePath == false &&
                             c.Context.Request.GetTypedHeaders().Accept.Any(x => x.MediaType.Value == "image/webp"))
                         {
-                            
+
                             if (c.Commands.Contains("webp") == false &&
                                 c.Commands.Contains("noformat") == false && path.EndsWithOneOf(settings.AllowedExtentions))
                             {
