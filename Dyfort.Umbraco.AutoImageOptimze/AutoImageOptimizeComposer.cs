@@ -3,103 +3,108 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SixLabors.ImageSharp.Web.Commands;
 using SixLabors.ImageSharp.Web.DependencyInjection;
+using SixLabors.ImageSharp.Web.Middleware;
 using SixLabors.ImageSharp.Web.Processors;
 using Smidge;
 using System.Linq;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Imaging.ImageSharp;
 
 namespace Dyfort.Umbraco.AutoImageOptimize
 {
-    public class AutoImageOptimizeComposer : IComposer
-    {
-        public void Compose(IUmbracoBuilder builder)
-        {          
+    [ComposeAfter(typeof(ImageSharpComposer))]
+	public class AutoImageOptimizeComposer : IComposer
+	{
+		public void Compose(IUmbracoBuilder builder)
+		{        
             builder.Services.AddOptions<AutoImageOptimizerSettings>()
-                     .Bind(builder.Config.GetSection(AutoImageOptimizerSettings.ConfigurationName));
+					 .Bind(builder.Config.GetSection(AutoImageOptimizerSettings.ConfigurationName));
 
-            var settings = builder.Config.GetSection(AutoImageOptimizerSettings.ConfigurationName).Get<AutoImageOptimizerSettings>();
+			var settings = builder.Config.GetSection(AutoImageOptimizerSettings.ConfigurationName).Get<AutoImageOptimizerSettings>();
 
-            if (settings == null)
-            {
-                settings = new AutoImageOptimizerSettings();
-            }
+			if (settings == null)
+			{
 
-            builder.Services.AddImageSharp(options =>
-            {
-              
+				settings = new AutoImageOptimizerSettings();
+			}
+			builder.Services.Configure<ImageSharpMiddlewareOptions>(options =>
+			{			
+				var onParseCommandsAsync = options.OnParseCommandsAsync;
+			
+				options.OnParseCommandsAsync = async context =>
+				{
+					if (!settings.Enabled)
+					{
+						await onParseCommandsAsync(context);
+						return;
+					}
 
-                options.OnParseCommandsAsync = c =>
-                {
-                    if (!settings.Enabled)
-                    {
-                        return Task.CompletedTask;
-                    }
+					if (context.Context != null)
+					{					
+						var path = context.Context.Request.Path.ToString();
+
+						// Don't convert when the noformat query string is set
+						if (context.Context.Request.QueryString.Value?.Contains("noformat") == true)
+						{
+							context.Commands.Add("noformat", "1");
+						}
+
+						if (context.Context.Request.QueryString.Value?.Contains("optimize") == true)
+						{
+							context.Commands.Add("noformat", "1");
+						}
+
+						// Exclude /umbraco/assets and don't convert if WebP is not supported
+						var excludePath = settings.ExcludedFolderPaths.Any(x => path.Contains(x));
 
 
-                    if (c.Context != null)
-                    {                      
+						if (excludePath == false &&
+							context.Context.Request.GetTypedHeaders().Accept.Any(x => x.MediaType.Value == "image/webp"))
+						{
 
-                        var path = c.Context.Request.Path.ToString();
+							if (context.Commands.Contains("webp") == false &&
+								context.Commands.Contains("noformat") == false && path.EndsWithOneOf(settings.AllowedExtentions))
+							{
+								context.Commands.Remove("format");
+								context.Commands.Add("format", "webp");
 
-                        // Don't convert when the noformat query string is set
-                        if (c.Context.Request.QueryString.Value?.Contains("noformat") == true)
-                            c.Commands.Add("noformat", "1");
+								if (context.Commands.Contains("quality") == false)
+									context.Commands.Add("quality", settings.Quality.ToString());
 
-                        if (c.Context.Request.QueryString.Value?.Contains("optimize") == true)
-                            c.Commands.Add("noformat", "1");
+								context.Context.Response.Headers["Vary"] = "Accept";
+							}
+						}
+					}
 
-                        // Exclude /umbraco/assets and don't convert if WebP is not supported
-                        var excludePath = settings.ExcludedFolderPaths.Any(x => path.Contains(x));
+					if (context.Commands.Count > 0)
+					{
+						// Check width and height to provide very basic security
+						var width = context.Parser.ParseValue<uint>(
+						context.Commands.GetValueOrDefault(ResizeWebProcessor.Width),
+						context.Culture);
 
-                        if (excludePath == false &&
-                            c.Context.Request.GetTypedHeaders().Accept.Any(x => x.MediaType.Value == "image/webp"))
-                        {
-                            
-                            if (c.Commands.Contains("webp") == false &&
-                                c.Commands.Contains("noformat") == false && path.EndsWithOneOf(settings.AllowedExtentions))
-                            {
-                                c.Commands.Remove("format");
-                                c.Commands.Add("format", "webp");
+						var height = context.Parser.ParseValue<uint>(
+							context.Commands.GetValueOrDefault(ResizeWebProcessor.Height),
+							context.Culture);
 
-                                if (c.Commands.Contains("quality") == false)
-                                    c.Commands.Add("quality", settings.Quality.ToString());
+						// If width exceeds limit, remove it from request
+						if (width > 2400)
+							context.Commands.Remove(ResizeWebProcessor.Width);
 
-                                c.Context.Response.Headers.Add("Vary", "Accept");
-                            }
-                        }
-                    }
+						// If height exceeds limit, remove it from request
+						if (height > 2400)
+							context.Commands.Remove(ResizeWebProcessor.Height);
 
-                    if (c.Commands.Count > 0)
-                    {
-                        // Check width and height to provide very basic security
-                        var width = c.Parser.ParseValue<uint>(
-                        c.Commands.GetValueOrDefault(ResizeWebProcessor.Width),
-                        c.Culture);
-
-                        var height = c.Parser.ParseValue<uint>(
-                            c.Commands.GetValueOrDefault(ResizeWebProcessor.Height),
-                            c.Culture);
-
-                        // If width exceeds limit, remove it from request
-                        if (width > 2400)
-                            c.Commands.Remove(ResizeWebProcessor.Width);
-
-                        // If height exceeds limit, remove it from request
-                        if (height > 2400)
-                            c.Commands.Remove(ResizeWebProcessor.Height);
-
-                        // Remove format command if noformat command has been set
-                        if (c.Commands.TryGetValue("noformat", out string value))
-                        {
-                            c.Commands.Remove("format");
-                        }
-                    }
-
-                    return Task.CompletedTask;
+						// Remove format command if noformat command has been set
+						if (context.Commands.TryGetValue("noformat", out string value))
+						{
+							context.Commands.Remove("format");
+						}
+					}
+                    await onParseCommandsAsync(context);
                 };
-            });
+			});
         }
-    }
+	}
 }
